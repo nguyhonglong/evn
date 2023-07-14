@@ -1,0 +1,14 @@
+<div class="warning">
+{{#each notifications}}
+    <div class="card">
+        <div class="card-header">
+            {{this.title}}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{this.title}}</h5>
+            <p class="card-text">{{this.descryption}}</p>
+            <p class="card-text"> {{this.author}}</p>
+        </div>
+    </div>
+{{/each}}
+</div>

@@ -1,0 +1,315 @@
+<div class="chart">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <h1>Trend chart</h1>
+ <div class="trendchart">
+  <canvas id="chart"></canvas>
+  
+ <ul>
+  <li style="color: red;">hydrogen_level</li>
+  <li style="color: green;">methane_level</li>
+  <li style="color: blue;">acetylene_level</li>
+  <li style="color: yellow;">ethylene_level</li>
+  <li style="color: purple;">ethane_level</li>
+  <li style="color: gray;">co_level</li>
+  <li style="color: brown;">co2_level</li>
+  <li style="color: black;">oxygen_level</li>
+  <li style="color: pink;">tdcg_level</li>
+ </ul>
+ </div>
+
+
+ <h1>Current CO2/CO Ratio Value: {{parameters.[0].[Carbon Dioxide (ppm)]}}/{{parameters.[0].[Carbon Monoxide (ppm)]}}</h1>
+	<script>
+		// Dữ liệu mực nước
+		var water = [
+        {{#each parameters}}
+			{time:moment("{{this.[Timestamp]}}", "DD/MM/YYYY h:mm:ss A").format("YYYY-MM-DD"), 
+            hydrogen_level:{{this.[Hydrogen (ppm)]}}*5,
+            methane_level:{{this.[Methane (ppm)]}}*3,
+            acetylene_level:{{this.[Acetylene (ppm)]}},
+            ethylene_level:{{this.[Ethylene (ppm)]}}*10,
+            ethane_level:{{this.[Ethane (ppm)]}}*3,
+            co_level:{{this.[Carbon Monoxide (ppm)]}}/70,
+            co2_level:{{this.[Carbon Dioxide (ppm)]}}/70,
+            oxygen_level:{{this.[Oxygen (ppm)]}}/100,
+            tdcg_level:{{this.[TDCG (ppm)]}}/10,
+            water_level:{{this.[Water (ppm)]}}*10
+        }{{#unless @last}},{{/unless}}
+        {{/each}}
+		];
+
+        
+
+
+ {{!-- var data2=[
+    {{#each parameters}}
+        {
+            "Timestamp":"{{this.[Timestamp]}}",
+            "Hydrogen":{{this.[Hydrogen (ppm)]}},
+            "Methane":{{this.[Methane (ppm)]}},
+            "Acetylene":{{this.[Acetylene (ppm)]}},
+            "Ethylene":{{this.[Ethylene (ppm)]}},
+            "Ethane":{{this.[Ethane (ppm)]}},
+            "CO":{{this.[Carbon Monoxide (ppm)]}},
+            "CO2":{{this.[Carbon Dioxide (ppm)]}},
+            "Oxygen":{{this.[Oxygen (ppm)]}},
+            "TDCG":{{this.[TDCG (ppm)]}},
+            "Water":{{this.[Water (ppm)]}}
+        }{{#unless @last}},{{/unless}}
+    {{/each}}
+] --}}
+
+function drawTable(data){
+		// Kích thước biểu đồ
+		var width = 1280;
+		var height = 600;
+
+		// Tạo đối tượng canvas
+		var canvas = d3.select("#chart")
+			.attr("width", width)
+			.attr("height", height)
+			.node();
+		var context = canvas.getContext("2d");
+
+		// Định dạng dữ liệu thời gian
+		var parseTime = d3.timeParse("%Y-%m-%d");
+		data.forEach(function(d) {
+			d.time = parseTime(d.time);
+		});
+
+		// Thiết lập định dạng trục x và trục y
+		var xScale = d3.scaleTime()
+			.domain(d3.extent(data, function(d) { return d.time; }))
+			.range([0, width]);
+		var yScale = d3.scaleLinear()
+			.domain([0, d3.max(data, function(d) { return d.water_level; })])
+			.range([height, 0]);
+
+		// Vẽ đường đồ thị
+		context.beginPath();
+		context.strokeStyle = "blue";
+		context.lineWidth = 2;
+		data.forEach(function(d, i) {
+			var x = xScale(d.time);
+			var y = yScale(d.water_level);
+			if (i == 0) {
+				context.moveTo(x, y);
+			} else {
+				context.lineTo(x, y);
+			}
+		});
+		context.stroke();
+
+		// Vẽ trục x và trục y
+		context.beginPath();
+		context.moveTo(0, height);
+		context.lineTo(width, height);
+		context.lineTo(width, 0);
+		context.stroke();
+
+		// Thêm đánh dấu vào trục y
+		var tickValues = [0, 5, 10, 15];
+		tickValues.forEach(function(d) {
+			var y = yScale(d);
+			context.beginPath();
+			context.moveTo(width - 5, y);
+			context.lineTo(width + 5, y);
+			context.stroke();
+			context.fillText(d, width + 10, y + 5);
+		});
+
+		// Thêm đánh dấu vào trục x
+		var tickValues = xScale.ticks();
+		tickValues.forEach(function(d) {
+			var x = xScale(d);
+			context.beginPath();
+			context.moveTo(x, height - 5);
+			context.lineTo(x, height + 5);
+			context.stroke();
+			context.fillText(d3.timeFormat("%d/%m")(d), x - 20, height + 20);
+		});
+
+		// Thêm tiêu đề và nhãn trục
+		context.font = "bold 14px sans-serif";
+		context.textAlign = "center";
+		
+		context.font = "normal 12px sans-serif";
+		context.textAlign = "end";
+		context.fillText("Hydrogen", width - 10, height - 10);
+		context.textAlign = "center";
+		context.fillText("Time", width / 2, height + 30);
+        // Chuyển đổi dữ liệu các chỉ số sang kiểu số
+data.forEach(function(d) {
+  d.hydrogen_level = +d.hydrogen_level;
+  d.methane_level = +d.methane_level;
+  d.acetylene_level = +d.acetylene_level;
+  d.ethylene_level = +d.ethylene_level;
+  d.ethane_level = +d.ethane_level;
+  d.co_level = +d.co_level;
+  d.co2_level = +d.co2_level;
+  d.oxygen_level = +d.oxygen_level;
+  d.tdcg_level = +d.tdcg_level;
+});
+
+// Thiết lập định dạng cho trục y của các chỉ số
+var yScale = d3.scaleLinear()
+  .domain([0, d3.max(data, function(d) { return Math.max(d.water_level, d.hydrogen_level, d.methane_level, d.acetylene_level, d.ethylene_level, d.ethane_level, d.co_level, d.co2_level, d.oxygen_level, d.tdcg_level); })])
+  .range([height, 0]);
+
+// Vẽ đường đồ thị cho hydrogen_level
+context.beginPath();
+context.strokeStyle = "red";
+context.lineWidth = 2;
+data.forEach(function(d, i) {
+  var x = xScale(d.time);
+  var y = yScale(d.hydrogen_level);
+  if (i == 0) {
+    context.moveTo(x, y);
+  } else {
+    context.lineTo(x, y);
+  }
+});
+context.stroke();
+
+// Vẽ đường đồ thị cho methane_level
+context.beginPath();
+context.strokeStyle = "green";
+context.lineWidth = 2;
+data.forEach(function(d, i) {
+  var x = xScale(d.time);
+  var y = yScale(d.methane_level);
+  if (i == 0) {
+    context.moveTo(x, y);
+  } else {
+    context.lineTo(x, y);
+  }
+});
+context.stroke();
+
+// Vẽ đường đồ thị cho acetylene_level
+context.beginPath();
+context.strokeStyle = "blue";
+context.lineWidth = 2;
+data.forEach(function(d, i) {
+  var x = xScale(d.time);
+  var y = yScale(d.acetylene_level);
+  if (i == 0) {
+    context.moveTo(x, y);
+  } else {
+    context.lineTo(x, y);
+  }
+});
+context.stroke();
+
+// Vẽ đường đồ thị cho ethylene_level
+context.beginPath();
+context.strokeStyle = "orange";
+context.lineWidth = 2;
+data.forEach(function(d, i) {
+  var x = xScale(d.time);
+  var y = yScale(d.ethylene_level);
+  if (i == 0) {
+    context.moveTo(x, y);
+  } else {
+    context.lineTo(x, y);
+  }
+});
+context.stroke();
+
+//Vẽ đường đồ thị cho ethane_level
+context.beginPath();
+context.strokeStyle = "purple";
+context.lineWidth = 2;
+data.forEach(function(d, i) {
+  var x = xScale(d.time);
+  var y = yScale(d.ethane_level);
+  if (i == 0) {
+    context.moveTo(x, y);
+  } else {
+    context.lineTo(x, y);
+  }
+});
+context.stroke();
+
+// Vẽ đường đồ thị cho co_level
+context.beginPath();
+context.strokeStyle = "gray";
+context.lineWidth = 2;
+data.forEach(function(d, i) {
+  var x = xScale(d.time);
+  var y = yScale(d.co_level);
+  if (i == 0) {
+    context.moveTo(x, y);
+  } else {
+    context.lineTo(x, y);
+  }
+});
+context.stroke();
+
+// Vẽ đường đồ thị cho co2_level
+context.beginPath();
+context.strokeStyle = "brown";
+context.lineWidth = 2;
+data.forEach(function(d, i) {
+  var x = xScale(d.time);
+  var y = yScale(d.co2_level);
+  if (i == 0) {
+    context.moveTo(x, y);
+  } else {
+    context.lineTo(x, y);
+  }
+});
+context.stroke();
+
+// Vẽ đường đồ thị cho oxygen_level
+context.beginPath();
+context.strokeStyle = "black";
+context.lineWidth = 2;
+data.forEach(function(d, i) {
+  var x = xScale(d.time);
+  var y = yScale(d.oxygen_level);
+  if (i == 0) {
+    context.moveTo(x, y);
+  } else {
+    context.lineTo(x, y);
+  }
+});
+context.stroke();
+
+// Vẽ đường đồ thị cho tdcg_level
+context.beginPath();
+context.strokeStyle = "pink";
+context.lineWidth = 2;
+data.forEach(function(d, i) {
+  var x = xScale(d.time);
+  var y = yScale(d.tdcg_level);
+  if (i == 0) {
+    context.moveTo(x, y);
+  } else {
+    context.lineTo(x, y);
+  }
+});
+context.stroke();
+
+// Thêm đánh dấu vào trục y cho các chỉ số
+var tickValues = [0, 50, 100, 150];
+tickValues.forEach(function(d) {
+  var y = yScale(d);
+  context.beginPath();
+  context.moveTo(width - 5, y);
+  context.lineTo(width + 5, y);
+  context.stroke();
+  context.fillText(d, width + 10, y + 5);
+});
+
+// Thêm chú thích cho biểu đồ
+context.font = "normal 12px sans-serif";
+context.textAlign = "";
+
+}
+
+drawTable(water)
+
+
+</script>
+</div>

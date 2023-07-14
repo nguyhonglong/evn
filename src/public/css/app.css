@@ -1,0 +1,56 @@
+.header .container-fluid {
+  background-image: url("./img/logo-evn.png"); }
+  .header .container-fluid .logo {
+    width: 100px;
+    margin: 10px;
+    margin-left: 20px; }
+  @media screen and (max-width: 420px) {
+    .header .container-fluid .logo2 {
+      display: none; }
+    .header .container-fluid .logo {
+      width: 70px;
+      margin: 0; } }
+  .header .container-fluid .logo2 {
+    width: 100px;
+    padding: 10px 0px 10px 0px; }
+
+.body {
+  min-height: 70vh; }
+  .body .container .datepicker {
+    display: grid;
+    grid-template-columns: 1fr 1fr; }
+  .body .container .transformer .select {
+    margin: 20px 0px 20px 0px;
+    padding: 30px;
+    border: 2px solid #0dcaf0;
+    border-radius: 3px; }
+    .body .container .transformer .select td {
+      padding: 0.5rem;
+      text-align: left; }
+    @media (min-width: 768px) {
+      .body .container .transformer .select .table-wrapper {
+        justify-content: flex-start; } }
+    .body .container .transformer .select label {
+      margin: 10px; }
+    .body .container .transformer .select .btn {
+      margin: 10px; }
+  .body .container .transformer .table th,
+  .body .container .transformer .table td {
+    padding: 0.5rem;
+    text-align: center;
+    border: 1px solid #ccc; }
+  @media (min-width: 768px) {
+    .body .container .transformer .table .table-wrapper {
+      justify-content: flex-start; } }
+  .body .container .warning .card {
+    margin: 20px; }
+  .body .container .chart {
+    margin-top: 30px;
+    padding: 0; }
+    .body .container .chart h1 {
+      margin: 20px 0px 20px 0px; }
+    .body .container .chart .trendchart {
+      display: flex; }
+    .body .container .chart #chart {
+      margin: 0;
+      border-left: 2px solid blue; }

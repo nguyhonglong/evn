@@ -1,0 +1,87 @@
+
+    <div class="datepicker">
+        <div class="date">
+            <label for="date1">Start date:</label>
+            <input type="date" id="date1" name="date">
+        </div>
+
+        <div class="date">
+            <label for="date2">End date:</label>
+            <input type="date" id="date2" name="date">
+        </div>
+    </div>
+
+    <div class="row" >
+        <div class="col">
+            <div class="transformer">
+                {{!-- <div class="select">
+                    <label for="trans">Chọn Trạm</label>
+                    <select class="form-select" id="trans" aria-label="Default select example">
+                        <option selected> --- Chọn trạm ---</option>
+                        <option value="1">Hà Nội</option>
+                        <option value="2">Đà Nẵng</option>
+                        <option value="3">Hồ Chí Minh</option>
+                    </select>
+
+                    <div class="row">
+                        <div class="col"><label for="birthday">Từ:</label>
+                            <input class="form-control" type="date" id="birthday" name="birthday">
+                        </div>
+                        <div class="col">
+                            <label for="birthday">Đến:</label>
+                            <input class="form-control" type="date" id="birthday" name="birthday">
+                        </div>
+                    </div>
+
+                    <label for="show">Chọn kiểu xem</label>
+                    <select class="form-select" id="trans" aria-label="Default select example">
+                        <option selected> Dạng bảng</option>
+                        <option value="1">Dạng biểu đồ</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                    <button type="button" class="btn btn-primary">Xem</button>
+                </div> --}}
+
+                <div class="table">
+                    <table id="table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Hydrogen</th>
+                                <th>Methane</th>
+                                <th>Acetylene</th>
+                                <th>Ethylene</th>
+                                <th>Ethane </th>
+                                <th>Carbon Monoxide</th>
+                                <th>Carbon Dioxide</th>
+                                <th>Oxygen</th>
+                                <th>TDCG</th>
+                                <th>Water</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each parameters}}
+                            <tr>
+                                <td>{{this.Timestamp}}</td>
+                                <td>{{this.[Hydrogen (ppm)]}}</td>
+                                <td>{{this.[Methane (ppm)]}}</td>
+                                <td>{{this.[Acetylene (ppm)]}}</td>
+                                <td>{{this.[Ethylene (ppm)]}}</td>
+                                <td>{{this.[Ethane (ppm)]}}</td>
+                                <td>{{this.[Carbon Monoxide (ppm)]}}</td>
+                                <td>{{this.[Carbon Dioxide (ppm)]}}</td>
+                                <td>{{this.[Oxygen (ppm)]}}</td>
+                                <td>{{this.[TDCG (ppm)]}}</td>
+                                <td>{{this.[Water (ppm)]}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Thêm thư viện jsPDF và html2canvas -->
